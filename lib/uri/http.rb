@@ -84,27 +84,6 @@ module URI
     #
     # == Description
     #
-    # Returns the authority for an HTTP uri, as defined in
-    # https://datatracker.ietf.org/doc/html/rfc3986/#section-3.2.
-    #
-    #
-    # Example:
-    #
-    #     URI::HTTP.build(host: 'www.example.com', path: '/foo/bar').authority #=> "www.example.com"
-    #     URI::HTTP.build(host: 'www.example.com', port: 8000, path: '/foo/bar').authority #=> "www.example.com:8000"
-    #     URI::HTTP.build(host: 'www.example.com', port: 80, path: '/foo/bar').authority #=> "www.example.com"
-    #
-    def authority
-      if port == default_port
-        host
-      else
-        "#{host}:#{port}"
-      end
-    end
-
-    #
-    # == Description
-    #
     # Returns the origin for an HTTP uri, as defined in
     # https://datatracker.ietf.org/doc/html/rfc6454.
     #
@@ -117,7 +96,11 @@ module URI
     #     URI::HTTPS.build(host: 'www.example.com', path: '/foo/bar').origin #=> "https://www.example.com"
     #
     def origin
-      "#{scheme}://#{authority}"
+      if port == default_port
+        "#{scheme}://#{host}"
+      else
+        "#{scheme}://#{host}:#{port}"
+      end
     end
   end
 

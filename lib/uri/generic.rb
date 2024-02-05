@@ -1338,6 +1338,29 @@ module URI
     end
 
     #
+    # == Description
+    #
+    # Returns the authority for a URI, as defined in
+    # [RFC3986 section 3.2]{https://www.rfc-editor.org/rfc/rfc3986.html#section-3.2}.
+    #
+    # Example:
+    #
+    #     URI::HTTP.build(host: 'www.example.com', path: '/foo/bar').authority #=> "www.example.com"
+    #     URI::HTTP.build(host: 'www.example.com', port: 8000, path: '/foo/bar').authority #=> "www.example.com:8000"
+    #     URI::HTTP.build(host: 'www.example.com', port: 80, path: '/foo/bar').authority #=> "www.example.com"
+    #
+    def authority
+      port = self.port || default_port
+      if    !host                            then nil
+      elsif !%r{\A(/|\z)}.match?(path.to_s)  then nil
+      elsif userinfo && port != default_port then "#{userinfo}@#{host}:#{port}"
+      elsif userinfo                         then "#{userinfo}@#{host}"
+      elsif             port != default_port then             "#{host}:#{port}"
+      else                                                       host
+      end
+    end
+
+    #
     # Constructs String from URI.
     #
     def to_s
