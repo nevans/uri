@@ -818,6 +818,11 @@ module URI
       v
     end
 
+    # Normalizes the path.  See URI.normalize_path.
+    def normalize_path!
+      @path = URI.normalize_path @path
+    end
+
     #
     # == Args
     #

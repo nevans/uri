@@ -590,6 +590,18 @@ module URI
     ary
   end
 
+  # TODO: relative path normalization
+  # TODO: Use a faster (less indirect) way to invoke the path normalization.
+  # TODO: Implement the RFC3986 algorithm
+  #
+  # Normalizes +path+, by resolving "." and ".." segments and converting escape
+  # sequences to lower case hexadecimal.
+  def self.normalize_path(path)
+    return path unless path&.start_with?("/") # TODO: normalize relative paths
+    parse("generic:").merge(path).path
+      .gsub(/(%[A-F]\h|%\h[A-F])/) {|m| $1.downcase }
+  end
+
   private
 =begin command for WEB_ENCODINGS_
   curl https://encoding.spec.whatwg.org/encodings.json|
